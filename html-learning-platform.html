@@ -1,0 +1,900 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Pro Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .top-bar {
+            background: rgba(0,0,0,0.3);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .top-bar h1 {
+            font-size: 1.5rem;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.3);
+            height: 8px;
+            border-radius: 10px;
+            width: 200px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            height: 100%;
+            width: 30%;
+            transition: width 0.3s;
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            height: calc(100vh - 120px);
+            gap: 0;
+        }
+        
+        .panel {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #ddd;
+        }
+        
+        .panel:last-child {
+            border-right: none;
+        }
+        
+        .panel-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-content {
+            flex: 1;
+            overflow: auto;
+            padding: 20px;
+        }
+        
+        #codeInput {
+            width: 100%;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            padding: 15px;
+            border: none;
+            resize: none;
+            background: #f8f9fa;
+            line-height: 1.6;
+        }
+        
+        #output {
+            min-height: 100%;
+            background: white;
+        }
+        
+        .explanation-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            border-radius: 5px;
+        }
+        
+        .explanation-section h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .explanation-section p {
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        
+        .code-line-explain {
+            background: #fff;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border-left: 3px solid #8b5cf6;
+        }
+        
+        .code-line-explain code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #dc2626;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .tip-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .tip-box strong {
+            color: #92400e;
+        }
+        
+        .mistake-box {
+            background: #fee2e2;
+            border-left: 4px solid #ef4444;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .mistake-box strong {
+            color: #991b1b;
+        }
+        
+        .control-buttons {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-top: 2px solid #e5e7eb;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .example-tabs {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .example-tab {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .example-tab:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .badge {
+            background: #22c55e;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .panel {
+                min-height: 400px;
+                border-right: none;
+                border-bottom: 2px solid #ddd;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <h1>🚀 HTML Pro Learning Platform</h1>
+        <div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 14px;">Progress:</span>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <span class="badge" id="levelBadge">Beginner</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="example-tabs">
+        <div class="example-tab" onclick="loadExample(0)">🏠 Start</div>
+        <div class="example-tab" onclick="loadExample(1)">📝 Headings</div>
+        <div class="example-tab" onclick="loadExample(2)">🎨 Colors</div>
+        <div class="example-tab" onclick="loadExample(3)">🖼️ Images</div>
+        <div class="example-tab" onclick="loadExample(4)">🔗 Links</div>
+        <div class="example-tab" onclick="loadExample(5)">📋 Lists</div>
+        <div class="example-tab" onclick="loadExample(6)">📊 Tables</div>
+        <div class="example-tab" onclick="loadExample(7)">🎯 Forms</div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Panel 1: Code Editor -->
+        <div class="panel">
+            <div class="panel-header">
+                📝 Code Likho Yahan
+                <button onclick="copyCode()" style="padding: 5px 15px; font-size: 12px;">📋 Copy</button>
+            </div>
+            <div class="panel-content" style="padding: 0;">
+                <textarea id="codeInput" oninput="runCode()">
+<h1>Hello World! 🌍</h1>
+
+<p>Main HTML seekh raha hoon!</p>
+
+<h2>Mera Introduction:</h2>
+<p><strong>Naam:</strong> Apna naam likho</p>
+<p><em>Hobby:</em> Coding 💻</p>
+
+<button>Click Me!</button>
+                </textarea>
+            </div>
+            <div class="control-buttons">
+                <button onclick="runCode()">▶️ Run</button>
+                <button onclick="clearCode()">🗑️ Clear</button>
+                <button onclick="formatCode()">✨ Format</button>
+            </div>
+        </div>
+        
+        <!-- Panel 2: Output/Result -->
+        <div class="panel">
+            <div class="panel-header">
+                ✨ Result Yahan Dikhega
+            </div>
+            <div class="panel-content">
+                <div id="output"></div>
+            </div>
+        </div>
+        
+        <!-- Panel 3: Explanation -->
+        <div class="panel">
+            <div class="panel-header">
+                🎓 Samajh Yahan Se
+            </div>
+            <div class="panel-content" id="explanation">
+                <!-- Explanations will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentLevel = 0;
+        
+        // Page load hote hi
+        window.onload = function() {
+            loadExample(0);
+        };
+        
+        function runCode() {
+            const code = document.getElementById('codeInput').value;
+            const output = document.getElementById('output');
+            output.innerHTML = code;
+            updateProgress();
+        }
+        
+        function clearCode() {
+            document.getElementById('codeInput').value = '';
+            document.getElementById('output').innerHTML = '<p style="color: #999;">Code likho...</p>';
+            document.getElementById('explanation').innerHTML = '<p style="color: #999;">Code likhoge toh explanation dikha dunga!</p>';
+        }
+        
+        function copyCode() {
+            const code = document.getElementById('codeInput').value;
+            navigator.clipboard.writeText(code);
+            alert('✅ Code copy ho gaya!');
+        }
+        
+        function formatCode() {
+            const code = document.getElementById('codeInput').value;
+            document.getElementById('codeInput').value = code.trim();
+            runCode();
+        }
+        
+        function updateProgress() {
+            const codeLength = document.getElementById('codeInput').value.length;
+            let progress = Math.min(100, (codeLength / 500) * 100);
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            if (progress < 30) {
+                document.getElementById('levelBadge').textContent = 'Beginner';
+            } else if (progress < 70) {
+                document.getElementById('levelBadge').textContent = 'Learning';
+            } else {
+                document.getElementById('levelBadge').textContent = 'Pro';
+            }
+        }
+        
+        function loadExample(num) {
+            let code = '';
+            let explanation = '';
+            
+            if (num === 0) {
+                code = `<h1>Hello World! 🌍</h1>
+
+<p>Main HTML seekh raha hoon!</p>
+
+<h2>Mera Introduction:</h2>
+<p><strong>Naam:</strong> Apna naam likho</p>
+<p><em>Hobby:</em> Coding 💻</p>
+
+<button>Click Me!</button>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>🎯 Yeh Code Kya Kar Raha Hai?</h3>
+                    <p>Yeh ek simple HTML page hai jo tumhara introduction dikha raha hai!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Line 1:</strong> <code>&lt;h1&gt;Hello World!&lt;/h1&gt;</code>
+                    <p><strong>Matlab:</strong> Yeh sabse bada heading hai! Website ka main title.</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Line 3:</strong> <code>&lt;p&gt;Main HTML seekh raha hoon!&lt;/p&gt;</code>
+                    <p><strong>Matlab:</strong> Yeh normal paragraph hai. Simple text likhne ke liye.</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Line 5:</strong> <code>&lt;h2&gt;Mera Introduction:&lt;/h2&gt;</code>
+                    <p><strong>Matlab:</strong> Yeh h1 se chhota heading hai. Sub-heading ke liye.</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Line 6:</strong> <code>&lt;strong&gt;Naam:&lt;/strong&gt;</code>
+                    <p><strong>Matlab:</strong> Text ko <strong>BOLD</strong> banane ke liye!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Line 7:</strong> <code>&lt;em&gt;Hobby:&lt;/em&gt;</code>
+                    <p><strong>Matlab:</strong> Text ko <em>Italic</em> banane ke liye!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Line 9:</strong> <code>&lt;button&gt;Click Me!&lt;/button&gt;</code>
+                    <p><strong>Matlab:</strong> Ek clickable button banaya!</p>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Pro Tip:</strong> Har tag ko open <code>&lt;tag&gt;</code> aur close <code>&lt;/tag&gt;</code> karna zaroori hai!
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Common Mistake:</strong> Tags close karna bhool jaana! Jaise <code>&lt;h1&gt;</code> likha par <code>&lt;/h1&gt;</code> nahi likha.
+                </div>`;
+            }
+            else if (num === 1) {
+                code = `<!-- Headings: Bade se Chhote -->
+<h1>Level 1 - Sabse Bada! 👑</h1>
+<h2>Level 2 - Thoda Chhota</h2>
+<h3>Level 3 - Aur Chhota</h3>
+<h4>Level 4 - Chhota</h4>
+<h5>Level 5 - Bahut Chhota</h5>
+<h6>Level 6 - Sabse Chhota 😊</h6>
+
+<p>Normal text paragraph!</p>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>📝 Headings Kya Hoti Hain?</h3>
+                    <p>Headings matlab "titles" - jaise book mein chapters hote hain!</p>
+                    <p>HTML mein <strong>6 types</strong> ki headings hain: h1, h2, h3, h4, h5, h6</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>&lt;h1&gt;</strong> - Sabse Important & Sabse Bada
+                    <p>👑 Page ka main title. Har page par sirf 1 baar use karo!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>&lt;h2&gt;</strong> - Sub Heading
+                    <p>📌 Main sections ke liye. h1 se chhota.</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>&lt;h3&gt; to &lt;h6&gt;</strong> - Aur Chhotay
+                    <p>📎 Jaise-jaise number badhta hai, size chhota hota jaata hai!</p>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Yaad Rakho:</strong><br>
+                    • h1 = Biggest (sabse bada)<br>
+                    • h6 = Smallest (sabse chhota)<br>
+                    • Order mein use karo: h1 → h2 → h3
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Galti Mat Karna:</strong> Ek page par bahut saare h1 mat lagana. Sirf 1 h1 use karo!
+                </div>
+                
+                <div class="tip-box">
+                    <strong>🎯 Try Karo:</strong> Code mein text badal kar dekho! Apna favourite game ka naam likho!
+                </div>`;
+            }
+            else if (num === 2) {
+                code = `<!-- Colors lagane ka tarika -->
+<h1 style="color: red;">Laal Rang! ❤️</h1>
+<h2 style="color: blue;">Neela Rang! 💙</h2>
+<h3 style="color: green;">Hara Rang! 💚</h3>
+
+<p style="color: purple; font-size: 20px;">
+  Baingan rang aur bada text! 🍆
+</p>
+
+<p style="background-color: yellow; padding: 10px;">
+  Peela background! 🌟
+</p>
+
+<p style="color: white; background-color: black; padding: 15px;">
+  Kaala background, safed text! ✨
+</p>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>🎨 Colors Kaise Lagayen?</h3>
+                    <p>HTML mein <code>style</code> attribute use karte hain colors ke liye!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Text Color:</strong> <code>style="color: red;"</code>
+                    <p>👉 Text ka rang change hota hai!</p>
+                    <p><strong>Colors:</strong> red, blue, green, yellow, purple, orange, pink, black, white</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Background Color:</strong> <code>style="background-color: yellow;"</code>
+                    <p>👉 Peeche ka rang (background) change hota hai!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Dono Ek Saath:</strong> <code>style="color: white; background-color: black;"</code>
+                    <p>👉 Semicolon (;) se separate karo multiple styles ko!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Font Size:</strong> <code>style="font-size: 20px;"</code>
+                    <p>👉 Text ka size badal sakte ho! (10px chhota, 30px bada)</p>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Extra Colors Try Karo:</strong><br>
+                    • orange, pink, brown, gray<br>
+                    • violet, indigo, turquoise<br>
+                    • crimson, navy, lime
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Dhyan Do:</strong> Semicolon (;) lagana mat bhoolna! <code>color: red; background: blue;</code>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>🎯 Challenge:</strong> Rainbow banao - 7 colors use karke! 🌈
+                </div>`;
+            }
+            else if (num === 3) {
+                code = `<!-- Images lagana -->
+<h2>Tasveeren Lagao! 🖼️</h2>
+
+<img src="https://via.placeholder.com/300x200/FF6B6B/FFFFFF?text=Pehli+Image" 
+     alt="Meri pehli image"
+     style="border: 5px solid purple; border-radius: 15px;">
+
+<p>👆 Yeh ek badi image hai!</p>
+
+<img src="https://via.placeholder.com/150/4ECDC4/FFFFFF?text=Chhoti" 
+     alt="Chhoti image"
+     style="border-radius: 50%;">
+
+<p>👆 Yeh gol (round) image hai!</p>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>🖼️ Images Kaise Lagaye?</h3>
+                    <p>Images lagane ke liye <code>&lt;img&gt;</code> tag use karte hain!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Basic Image Tag:</strong> <code>&lt;img src="..." alt="..."&gt;</code>
+                    <p>👉 Image tag ko CLOSE karne ki zaroorat nahi! Self-closing tag hai.</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>src =</strong> "image ka link"
+                    <p>👉 Yeh batata hai ki image kahan se laani hai!</p>
+                    <p>Tum apni image ka link laga sakte ho!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>alt =</strong> "description"
+                    <p>👉 Agar image na dikhe toh yeh text dikhega!</p>
+                    <p>Yeh important hai - hamesha likho!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Style Laga Sakte Ho:</strong>
+                    <p>• <code>border: 5px solid purple;</code> - Border lagao</p>
+                    <p>• <code>border-radius: 15px;</code> - Corners round karo</p>
+                    <p>• <code>border-radius: 50%;</code> - Puri image round/gol!</p>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Size Control:</strong><br>
+                    <code>width="300"</code> - Chaudi 300 pixels<br>
+                    <code>height="200"</code> - Oonchi 200 pixels
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Galti:</strong> Image tag ko close mat karo! <code>&lt;img&gt;</code> sahi hai, <code>&lt;/img&gt;</code> galat!
+                </div>
+                
+                <div class="tip-box">
+                    <strong>🎯 Try Karo:</strong> Google se koi image ka link copy karke lagao!
+                </div>`;
+            }
+            else if (num === 4) {
+                code = `<!-- Links aur Buttons -->
+<h2>Click Karne Wali Cheezon! 🖱️</h2>
+
+<a href="https://www.google.com" target="_blank">
+  Google par jao! 🔍
+</a>
+
+<br><br>
+
+<a href="https://www.youtube.com" target="_blank">
+  <button style="background: red; color: white; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-size: 16px;">
+    YouTube Kholo! 📺
+  </button>
+</a>
+
+<br><br>
+
+<button onclick="alert('Hello! Button kaam kar raha hai! 🎉')">
+  Mujhe Click Karo!
+</button>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>🔗 Links Aur Buttons!</h3>
+                    <p>Clickable links aur buttons banane ka tarika!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Link Tag:</strong> <code>&lt;a href="..."&gt;Text&lt;/a&gt;</code>
+                    <p>👉 <strong>a</strong> = anchor (link ka tag)</p>
+                    <p>👉 <strong>href</strong> = kahan jaana hai (website link)</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>target="_blank"</strong>
+                    <p>👉 Naye tab mein khulega!</p>
+                    <p>Agar yeh nahi likhoge toh same tab mein khulega.</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Button Tag:</strong> <code>&lt;button&gt;Text&lt;/button&gt;</code>
+                    <p>👉 Click karne wala button banata hai!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Button + Link:</strong> Button ko link ke andar rakho
+                    <p>👉 Button click karoge toh link khulega!</p>
+                    <code>&lt;a href="..."&gt;&lt;button&gt;Click&lt;/button&gt;&lt;/a&gt;</code>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>onclick =</strong> "kuch action"
+                    <p>👉 Button click hone par kya hoga yeh batata hai!</p>
+                    <p><code>onclick="alert('Hello!')"</code> - Popup message!</p>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Style Tips:</strong><br>
+                    • <code>cursor: pointer;</code> - Mouse par hand cursor<br>
+                    • <code>border-radius: 10px;</code> - Round corners<br>
+                    • <code>padding: 15px;</code> - Button bada lagega
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Galti:</strong> href mein link likhna bhool jaana! href="https://..." zaroori hai!
+                </div>`;
+            }
+            else if (num === 5) {
+                code = `<!-- Lists banao -->
+<h2>Shopping List 🛒</h2>
+<ul>
+  <li>🍎 Seb</li>
+  <li>🍌 Kela</li>
+  <li>🥛 Doodh</li>
+  <li>🍞 Bread</li>
+  <li>🍫 Chocolate</li>
+</ul>
+
+<h2>Top 5 Games 🎮</h2>
+<ol>
+  <li>Free Fire</li>
+  <li>BGMI</li>
+  <li>Clash of Clans</li>
+  <li>Subway Surfers</li>
+  <li>Temple Run</li>
+</ol>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>📋 Lists Kaise Banaye?</h3>
+                    <p>HTML mein 2 types ki lists hain: Bulleted aur Numbered!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Unordered List (Bullets):</strong> <code>&lt;ul&gt;</code>
+                    <p>👉 <strong>ul</strong> = Unordered List</p>
+                    <p>👉 Items ke aage bullets (•) lagta hai</p>
+                    <p>👉 Jab order matter nahi karta (shopping list)</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Ordered List (Numbers):</strong> <code>&lt;ol&gt;</code>
+                    <p>👉 <strong>ol</strong> = Ordered List</p>
+                    <p>👉 Items ke aage numbers (1, 2, 3...) lagta hai</p>
+                    <p>👉 Jab order important hai (ranking, steps)</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>List Items:</strong> <code>&lt;li&gt;Item&lt;/li&gt;</code>
+                    <p>👉 <strong>li</strong> = List Item</p>
+                    <p>👉 Har cheez ko li tag mein likho!</p>
+                    <p>👉 Kitne bhi li laga sakte ho!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Structure:</strong>
+                    <pre style="background: #f1f5f9; padding: 10px; border-radius: 5px; font-size: 13px;">
+&lt;ul&gt;
+  &lt;li&gt;Item 1&lt;/li&gt;
+  &lt;li&gt;Item 2&lt;/li&gt;
+&lt;/ul&gt;</pre>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Yaad Rakho:</strong><br>
+                    • ul/ol ke andar SIRF li tags<br>
+                    • ul = bullets (•)<br>
+                    • ol = numbers (1,2,3)
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Galti:</strong> ul/ol ke andar seedha text mat likho! Hamesha li use karo!
+                </div>
+                
+                <div class="tip-box">
+                    <strong>🎯 Try:</strong> Apne favourite 5 movies ki list banao!
+                </div>`;
+            }
+            else if (num === 6) {
+                code = `<!-- Table banao -->
+<h2>Mera Time Table 📅</h2>
+
+<table border="2" style="border-collapse: collapse; width: 100%;">
+  <tr style="background: lightblue;">
+    <th style="padding: 12px;">Din</th>
+    <th style="padding: 12px;">Subject</th>
+    <th style="padding: 12px;">Time</th>
+  </tr>
+  <tr>
+    <td style="padding: 10px;">Monday</td>
+    <td style="padding: 10px;">Maths 🔢</td>
+    <td style="padding: 10px;">9:00 AM</td>
+  </tr>
+  <tr style="background: #f0f0f0;">
+    <td style="padding: 10px;">Tuesday</td>
+    <td style="padding: 10px;">Science 🔬</td>
+    <td style="padding: 10px;">10:00 AM</td>
+  </tr>
+  <tr>
+    <td style="padding: 10px;">Wednesday</td>
+    <td style="padding: 10px;">English 📚</td>
+    <td style="padding: 10px;">11:00 AM</td>
+  </tr>
+</table>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>📊 Table Kaise Banaye?</h3>
+                    <p>Tables matlab rows aur columns! Excel jaisa!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Table Tag:</strong> <code>&lt;table&gt;</code>
+                    <p>👉 Pura table yahan se shuru hota hai</p>
+                    <p>👉 <code>border="2"</code> - Border ki motai</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Table Row:</strong> <code>&lt;tr&gt;</code>
+                    <p>👉 <strong>tr</strong> = Table Row (horizontal line)</p>
+                    <p>👉 Ek row matlab ek line!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Table Header:</strong> <code>&lt;th&gt;</code>
+                    <p>👉 <strong>th</strong> = Table Header (heading)</p>
+                    <p>👉 Bold aur centered hota hai automatically</p>
+                    <p>👉 Pehli row mein use karte hain (columns ki heading)</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Table Data:</strong> <code>&lt;td&gt;</code>
+                    <p>👉 <strong>td</strong> = Table Data (normal cell)</p>
+                    <p>👉 Actual data yahan likho!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Structure Samjho:</strong>
+                    <pre style="background: #f1f5f9; padding: 10px; border-radius: 5px; font-size: 12px;">
+&lt;table&gt;
+  &lt;tr&gt;              ← Row 1 (Headers)
+    &lt;th&gt;Name&lt;/th&gt;   ← Column 1
+    &lt;th&gt;Age&lt;/th&gt;    ← Column 2
+  &lt;/tr&gt;
+  &lt;tr&gt;              ← Row 2 (Data)
+    &lt;td&gt;Raj&lt;/td&gt;    ← Column 1
+    &lt;td&gt;20&lt;/td&gt;     ← Column 2
+  &lt;/tr&gt;
+&lt;/table&gt;</pre>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Style Tips:</strong><br>
+                    • <code>border-collapse: collapse;</code> - Borders ek saath<br>
+                    • <code>width: 100%;</code> - Puri width le<br>
+                    • <code>padding: 10px;</code> - Space cells mein
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Galti:</strong> Har row mein same number of td/th hone chahiye! 3 columns = 3 td!
+                </div>`;
+            }
+            else if (num === 7) {
+                code = `<!-- Form banao -->
+<h2>Registration Form 📝</h2>
+
+<form style="background: #f0f9ff; padding: 20px; border-radius: 10px;">
+  <label>Naam:</label><br>
+  <input type="text" placeholder="Apna naam likho" style="padding: 8px; width: 250px; margin: 5px 0;"><br><br>
+  
+  <label>Email:</label><br>
+  <input type="email" placeholder="your@email.com" style="padding: 8px; width: 250px; margin: 5px 0;"><br><br>
+  
+  <label>Age:</label><br>
+  <input type="number" placeholder="Umr" style="padding: 8px; width: 250px; margin: 5px 0;"><br><br>
+  
+  <label>Gender:</label><br>
+  <input type="radio" name="gender"> Male
+  <input type="radio" name="gender"> Female<br><br>
+  
+  <label>Message:</label><br>
+  <textarea placeholder="Kuch likho..." style="padding: 8px; width: 250px; height: 80px;"></textarea><br><br>
+  
+  <button type="submit" style="background: green; color: white; padding: 10px 30px; border: none; border-radius: 5px; cursor: pointer;">
+    Submit ✅
+  </button>
+</form>`;
+                
+                explanation = `
+                <div class="explanation-section">
+                    <h3>📝 Forms Kaise Banaye?</h3>
+                    <p>Forms matlab jahan user apni info daal sake!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Form Tag:</strong> <code>&lt;form&gt;</code>
+                    <p>👉 Saara form content yahan ke andar!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Label:</strong> <code>&lt;label&gt;Text&lt;/label&gt;</code>
+                    <p>👉 Input field ka naam (kya enter karna hai)</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Text Input:</strong> <code>&lt;input type="text"&gt;</code>
+                    <p>👉 Ek line text lene ke liye (naam, address)</p>
+                    <p>👉 <code>placeholder</code> = hint message (gray text)</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Input Types:</strong>
+                    <p>• <code>type="email"</code> - Email id ke liye</p>
+                    <p>• <code>type="number"</code> - Sirf numbers</p>
+                    <p>• <code>type="password"</code> - Password hide karke</p>
+                    <p>• <code>type="radio"</code> - Options (1 choose karo)</p>
+                    <p>• <code>type="checkbox"</code> - Multiple select</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Textarea:</strong> <code>&lt;textarea&gt;&lt;/textarea&gt;</code>
+                    <p>👉 Bahut saara text likhne ke liye (message, address)</p>
+                    <p>👉 Multiple lines!</p>
+                </div>
+                
+                <div class="code-line-explain">
+                    <strong>Submit Button:</strong> <code>&lt;button type="submit"&gt;</code>
+                    <p>👉 Form submit karne ke liye button</p>
+                </div>
+                
+                <div class="tip-box">
+                    <strong>💡 Important:</strong><br>
+                    • Radio buttons mein same <code>name</code> do (ek hi select ho)<br>
+                    • Label ke baad <code>&lt;br&gt;</code> lagao (next line)<br>
+                    • placeholder helpful hint deta hai
+                </div>
+                
+                <div class="mistake-box">
+                    <strong>❌ Galti:</strong> Input tag close mat karo! <code>&lt;input&gt;</code> self-closing hai!
+                </div>
+                
+                <div class="tip-box">
+                    <strong>🎯 Try:</strong> Apna khud ka feedback form banao!
+                </div>`;
+            }
+            
+            document.getElementById('codeInput').value = code;
+            document.getElementById('explanation').innerHTML = explanation;
+            runCode();
+        }
+    </script>
+</body>
+</html>
